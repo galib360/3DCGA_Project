@@ -29,9 +29,18 @@
     <ClInclude Include="..\camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\loadppm.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Vec3D.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\loadppm.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

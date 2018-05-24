@@ -12,9 +12,20 @@ layout(location = 6) uniform sampler2D texLight;
 // Output for on-screen color
 layout(location = 0) out vec4 outColor;
 
+
+
 // Interpolated output data from vertex shader
 in vec3 fragPos;    // World-space position
 in vec3 fragNormal; // World-space normal
+
+vec4 light = vec4(0,3,0,0);
+
+const vec3 lightColor = vec3(0.5, 0.5, 0.5);
+const float lightPower = 5.0;
+const vec3 ambColor = vec3(0.1, 0.1, 0.1);
+const vec3 diffuseColor = vec3(0.4, 0.4, 0.4);
+const vec3 specColor = vec3(1.0, 1.0, 1.0);
+const float shininess = 16.0;
 
 float random(vec3 seed, int i){
 	vec4 seed4 = vec4(seed,i);
@@ -26,9 +37,27 @@ float random(vec3 seed, int i){
 
 void main() {
 
-	const vec3 lightDir = normalize(lightPos - fragPos);
+	//vec3 lightPosxyz = vec3(lightPos.xyz);
+	vec3 lightDir = normalize(light.xyz - fragPos);
 	float visibility = 1.0;
-	float bias = 0.001;
+	float bias = 0.002;
+
+	vec3 normal = normalize(fragNormal);
+	//vec3 lightDir = lightPos - fragPos;
+	float distance = length(lightDir);
+	distance = distance*distance;
+	lightDir = normalize(lightDir);
+
+	float lambertian = max(dot(lightDir, normal), 0.0);
+	float specular = 0.0;
+
+	if(lambertian> 0.0){
+		vec3 viewDir = normalize(-fragPos);
+
+		vec3 halfDir = normalize(lightDir + viewDir);
+		float specAngle = max(dot(halfDir, normal), 0.0);
+		specular = pow(specAngle, shininess);
+	}
 
 	vec2 poissonDisk[16] = vec2[]( 
 	   vec2( -0.94201624, -0.39906216 ), 
@@ -49,9 +78,6 @@ void main() {
 	   vec2( 0.14383161, -0.14100790 ) 
 	);
 
-	//float cosTheta = max(dot(fragNormal, lightDir), 0);
-	//float bias = 0.001*tan(acos(cosTheta));
-	//bias = clamp(bias, 0.0 ,0.01);
 
 	vec4 shadowCoord = lightMVP * vec4(fragPos, 1.0);
 	vec4 fragLightCoord = lightMVP * vec4(fragPos, 1.0);
@@ -61,12 +87,6 @@ void main() {
 	vec2 shadowMapCoord = fragLightCoord.xy;
 	float shadowMapDepth = texture(texShadow, shadowMapCoord).x;
 
-	//stratified poisson sampling
-	//for (int i=0;i<4;i++){
-	//	int index = int(16.0*random(fragPos.xyy, i))%16;
-	//	visibility -= 0.2*(1.0-texture( texShadow, vec3((shadowMapCoord + poissonDisk[index]/700.0).xy, (fragLightCoord.z-bias)/fragLightCoord.w) ));
-	//	visibility -= 0.2 * (1.0 - texture(texShadow, vec3(shadowMapCoord + poissonDisk[index]/1000.0, (fragLightDepth-bias)/fragLightCoord.w) ));
-	//}
 
 	//poisson sampling with PCF
 	for (int i=0;i<4;i++){
@@ -75,28 +95,17 @@ void main() {
 		}
 	}
 
-	//general withouth any sampling
-	//if(shadowMapDepth < fragLightDepth-bias){
-	//	visibility =0.5;
-	//}
-	
+
 	//for spotlight
-	vec2 distancevec = fragLightCoord.xy - vec2(0.5, 0.5);
-	float distance = length(distancevec);
-	float lightMul = (-2* distance) + 1;
+	//vec2 distancevec = fragLightCoord.xy - vec2(0.5, 0.5);
+	//float distance = length(distancevec);
+	//float lightMul = (-2* distance) + 1;
 	
 
-	// Output the normal as color
-	// remove the if else to remove spotlight
-	//if ( distance < 0.5 ){
-	//outColor = vec4(vec3(max(dot(fragNormal, lightDir), 0.0)), 1.0); //without shadow
-    //outColor = vec4(vec3(max(dot(fragNormal, lightDir), 0.0)), 1.0) * visibility * lightMul; //with shadow only
-	outColor = vec4(vec3(max(dot(fragNormal, lightDir), 0.0)), 1.0) * visibility; //with shadow only, no spotlight
-	//outColor = vec4(vec3(max(dot(fragNormal, lightDir), 0.0)), 1.0) * visibility * lightMul * vec4(texture(texLight, shadowMapCoord).xy, 0.0, 0.0); // with shadow and colored light texture ex5
-	//outColor = vec4(vec3(max(dot(fragNormal, lightDir), 0.0)), 1.0) * visibility * vec4(texture(texLight, shadowMapCoord).xy, 0.0, 0.0);
-	//outColor = vec4(texture(texLight, shadowMapCoord).xy, 0.0, 0.0);
-	//}
-	//else{
-	//	outColor = vec4(0,0,0,0);
-	//}
+	
+	vec3 finalColor = ambColor + (diffuseColor * lambertian * lightColor * lightPower / distance) + (specColor * specular * lightColor * lightPower / distance);
+	outColor = vec4(finalColor, 1.0) * visibility; //with shadow only, no spotlight
+	
+
+
 }
