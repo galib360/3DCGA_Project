@@ -8,8 +8,6 @@ layout(location = 2) uniform float time;
 in vec3 fragPos; // World-space position
 in vec3 fragNormal; // World-space normal
 
-layout(location = 0) out float fragmentdepth;
-
 // Note: There is no output for on-screen color
 // 
 // Since this is for shadow mapping, we only care about
@@ -18,5 +16,4 @@ layout(location = 0) out float fragmentdepth;
 
 void main() 
 {
-	fragmentdepth = fragPos.z;
 }

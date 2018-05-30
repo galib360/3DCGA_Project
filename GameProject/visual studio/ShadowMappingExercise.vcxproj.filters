@@ -13,6 +13,12 @@
     <None Include="..\shadow.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\terrain.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\terrain.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -29,27 +35,27 @@
     <ClInclude Include="..\camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\loadppm.h">
+    <ClInclude Include="..\libraries\Model.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Vec3D.h">
+    <ClInclude Include="..\libraries\grid.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\grid.h">
+    <ClInclude Include="..\libraries\mesh.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\mesh.h">
+    <ClInclude Include="..\libraries\stb_image.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Vertex.h">
+    <ClInclude Include="..\libraries\Vec3D.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libraries\Vertex.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\loadppm.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\grid.cpp">

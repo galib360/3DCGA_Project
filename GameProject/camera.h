@@ -19,9 +19,9 @@ struct Camera
 	float     aspect;
 
 	Camera::Camera()
-	: position(glm::vec3(0, 0, 0))
-	, forward (glm::vec3(0, 0,-1))
-	, up      (glm::vec3(0, 1, 0)) 
+	: position(glm::vec3(0, 1, 0))
+	, forward (glm::vec3(0, 0, 0))
+	, up      (glm::vec3(0, 0, 1)) 
 	, fov     (glm::pi<float>() / 4.f)
 	, aspect  (1.f)
 	, near    (0.1f)
@@ -42,6 +42,14 @@ struct Camera
 	{
 		return pMatrix() * vMatrix();
 	}
+
+	glm::mat4 voMatrix() const
+	{
+		glm::mat4 oMatrix;
+		oMatrix = glm::ortho<float>(-8.0, 8.0, -8, 8,0, 30);
+		return oMatrix * vMatrix();
+	}
+
 
 	void updatePosition(glm::vec3 speed)
 	{
@@ -81,19 +89,19 @@ void cameraKeyboardHandler(int key, int action)
 
 	switch (key) 
 	{
-	case GLFW_KEY_A:
+	case GLFW_KEY_LEFT:
 		if (action == GLFW_PRESS)   camSpeed.x =  -sp;
 		if (action == GLFW_RELEASE) camSpeed.x =  0.0;
 		break;
-	case GLFW_KEY_D:
+	case GLFW_KEY_RIGHT:
 		if (action == GLFW_PRESS)   camSpeed.x =  sp;
 		if (action == GLFW_RELEASE) camSpeed.x =  0.0;
 		break;
-	case GLFW_KEY_W:
+	case GLFW_KEY_UP:
 		if (action == GLFW_PRESS)   camSpeed.z =  sp;
 		if (action == GLFW_RELEASE) camSpeed.z =  0.0;
 		break;
-	case GLFW_KEY_S:
+	case GLFW_KEY_DOWN:
 		if (action == GLFW_PRESS)   camSpeed.z = -sp;
 		if (action == GLFW_RELEASE) camSpeed.z =  0.0;
 		break;
